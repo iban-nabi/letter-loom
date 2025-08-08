@@ -16,7 +16,7 @@ import lombok.Setter;
 public class UserGame {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -29,6 +29,6 @@ public class UserGame {
     @Column(name = "result", nullable = true)
     private String result;
 
-    @Column(name = "winning_word", nullable = false)
+    @Column(name = "winning_word", nullable = true)
     private String winningWord;
 }

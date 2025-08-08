@@ -1,9 +1,9 @@
 create table user_games
 (
-    id int auto_increment
+    id bigint auto_increment
         primary key,
-    user_id int not null,
-    game_id int not null,
+    user_id bigint not null,
+    game_id bigint not null,
     result enum('win','lose') not null,
     winning_word varchar(255) null,
     constraint user_games_game_id_fk

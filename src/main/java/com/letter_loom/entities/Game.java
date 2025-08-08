@@ -20,7 +20,7 @@ import lombok.Setter;
 public class Game {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Long id;
 
     @Column(name = "status", nullable = false)
     private String status;

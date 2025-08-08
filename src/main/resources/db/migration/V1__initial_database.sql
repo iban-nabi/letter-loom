@@ -1,6 +1,6 @@
 create table users
 (
-    id        int auto_increment
+    id        bigint auto_increment
         primary key,
     username  varchar(255) not null,
     firstname varchar(255) null,
@@ -11,7 +11,7 @@ create table users
 
 create table games
 (
-    id         int auto_increment
+    id         bigint auto_increment
         primary key,
     status     ENUM ('waiting', 'ongoing', 'finished') not null,
     date       date                                    not null,
