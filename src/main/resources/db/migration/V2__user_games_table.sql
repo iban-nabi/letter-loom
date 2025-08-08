@@ -4,6 +4,8 @@ create table user_games
         primary key,
     user_id int not null,
     game_id int not null,
+    result enum('win','lose') not null,
+    winning_word varchar(255) null,
     constraint user_games_game_id_fk
         foreign key (game_id) references games (id),
     constraint user_games_users_id_fk
