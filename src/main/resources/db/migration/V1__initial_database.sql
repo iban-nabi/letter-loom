@@ -9,7 +9,7 @@ create table users
     password  varchar(255) not null
 );
 
-create table game
+create table games
 (
     id         int auto_increment
         primary key,
