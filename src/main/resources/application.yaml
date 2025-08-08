@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: letter-loom
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/letter-loom?createDatabaseIfNotExist=true
+    username: root
+    password: jiejie7jie

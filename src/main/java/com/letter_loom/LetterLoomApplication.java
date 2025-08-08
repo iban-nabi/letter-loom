@@ -1,4 +1,4 @@
-package com.letter_loom.letter_loom;
+package com.letter_loom;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

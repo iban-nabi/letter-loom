@@ -1,4 +1,4 @@
-package com.letter_loom.letter_loom;
+package com.letter_loom;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
