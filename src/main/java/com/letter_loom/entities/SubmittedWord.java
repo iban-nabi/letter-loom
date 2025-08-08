@@ -13,6 +13,9 @@ public class SubmittedWord {
     @Column(name = "user_game_id")
     private int userGameId;
 
+    @Column(name = "round_number")
+    private int roundNumber;
+
     @Column(name = "word")
     private String word;
 }

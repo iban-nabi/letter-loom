@@ -6,7 +6,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(name = "user_games")
 public class UserGame {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
