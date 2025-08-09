@@ -5,7 +5,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     // create user
+
     // retrieve user
+    User findUserById(Long id);
+
     // update user
+    User updateUserById(Long id, User user);
+
     // delete user
 }
