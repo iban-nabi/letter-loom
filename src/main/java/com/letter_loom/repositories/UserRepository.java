@@ -7,10 +7,10 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // create user
 
     // retrieve user
-    User findUserById(Long id);
+    User findById(long id);
 
     // update user
-    User updateUserById(Long id, User user);
+    //User updateUserById(Long id, User user);
 
     // delete user
 }

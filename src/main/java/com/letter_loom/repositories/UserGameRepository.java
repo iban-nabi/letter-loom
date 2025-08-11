@@ -14,12 +14,12 @@ public interface UserGameRepository extends JpaRepository<UserGame, Long> {
 
     // update user game
     @Modifying
-    @Query("UPDATE UserGame ug set ug.result = :result WHERE ug.id = :id " +
+    @Query("UPDATE UserGame ug SET ug.result = :result WHERE ug.id = :id " +
             "AND ug.game.id = :gameId AND ug.user.id = :userId")
     void updateGameResult(@Param("id") Long id, @Param("result") String result, @Param("gameId")
         Long gameId, @Param("userId") Long userId);
 
     // get game history of users
-    @Query("SELECT g FROM Game g INNER JOIN UserGame ug ON ug.game WHERE ug.user.id = :id ")
-    List<Game> findUserGameHistory(@Param("id") Long id);
+//    @Query("SELECT g FROM Game g INNER JOIN UserGame ug ON ug.game WHERE ug.user.id = :id ")
+//    List<Game> findUserGameHistory(@Param("id") Long id);
 }

@@ -31,4 +31,7 @@ public class UserGame {
 
     @Column(name = "winning_word", nullable = true)
     private String winningWord;
+
+    @Column(name= "round_number")
+    private Integer roundNumber;
 }

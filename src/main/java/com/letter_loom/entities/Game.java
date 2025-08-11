@@ -36,4 +36,7 @@ public class Game {
 
     @OneToMany(mappedBy = "game")
     private List<UserGame> games = new ArrayList<>();
+
+    @OneToOne(mappedBy = "game")
+    private GameWinner gameWinner;
 }
