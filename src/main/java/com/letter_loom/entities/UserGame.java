@@ -34,4 +34,7 @@ public class UserGame {
 
     @Column(name= "round_number")
     private Integer roundNumber;
+
+    @Column(name = "score")
+    private Long score;
 }

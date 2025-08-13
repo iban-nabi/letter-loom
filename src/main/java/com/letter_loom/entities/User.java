@@ -36,9 +36,9 @@ public class User {
     @Column(name = "password", nullable = false)
     private String password;
 
-    @OneToMany(mappedBy = "user")
-    private List<UserGame> userGames = new ArrayList<>();
+//    @OneToMany(mappedBy = "user")
+//    private List<UserGame> userGames = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
-    private List<GameWinner> gameWinners = new ArrayList<>();
+//    @OneToMany(mappedBy = "user")
+//    private List<GameWinner> gameWinners = new ArrayList<>();
 }

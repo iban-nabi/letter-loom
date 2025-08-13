@@ -7,7 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class UserLeaderboardInfoDto {
+public class LeaderboardWinsDto {
     private Long userId;
     private String username;
     private Long noOfWins;
