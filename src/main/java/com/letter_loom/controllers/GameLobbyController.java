@@ -17,8 +17,9 @@ public class GameLobbyController {
         this.gameLobbyService = gameLobbyService;
     }
 
-    public void joinRandomGame(){
-
+    public void joinRandomGame(Long userId){
+        // get the list of games, if there is a game available, join there
+        //else create a new game
     }
 
     public void createGame(Game game){

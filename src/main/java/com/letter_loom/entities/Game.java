@@ -39,4 +39,7 @@ public class Game {
 
     @OneToOne(mappedBy = "game")
     private GameWinner gameWinner;
+
+    @Column(name="player_count", nullable = false)
+    private int playerCount;
 }
