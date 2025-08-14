@@ -1,5 +1,6 @@
 package com.letter_loom.controllers;
 
+import com.letter_loom.dtos.RegisterUserRequest;
 import com.letter_loom.dtos.UserDto;
 import com.letter_loom.entities.User;
 import com.letter_loom.mappers.UserMapper;
@@ -7,10 +8,10 @@ import com.letter_loom.repositories.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @AllArgsConstructor
@@ -21,11 +22,25 @@ public class UserController {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
 
-    public void registerUser(String password){
-        passwordEncoder.encode(password);
+    @PostMapping("/register-user")
+    public ResponseEntity<UserDto> registerUser(
+            UriComponentsBuilder uriComponentsBuilder,
+            @RequestBody RegisterUserRequest request){
+
+        User user = userMapper.toEntity(request);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        userRepository.save(user);
+
+        URI uri = uriComponentsBuilder.path("/user/{id}").buildAndExpand(user.getId()).toUri();
+        return ResponseEntity.created(uri).body(userMapper.toDto(user));
     }
 
-    @GetMapping("user/{id}")
+
+    public void loginUser(){
+
+    }
+
+    @GetMapping("/{id}")
     public ResponseEntity<UserDto> getUserDetails(@PathVariable Long id){
         User user = userRepository.findById(id).orElse(null);
         if(user!=null){
