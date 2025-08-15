@@ -6,6 +6,7 @@ import com.letter_loom.entities.User;
 import com.letter_loom.mappers.UserMapper;
 import com.letter_loom.repositories.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -28,11 +29,19 @@ public class UserController {
             @RequestBody RegisterUserRequest request){
 
         User user = userMapper.toEntity(request);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        userRepository.save(user);
 
-        URI uri = uriComponentsBuilder.path("/user/{id}").buildAndExpand(user.getId()).toUri();
-        return ResponseEntity.created(uri).body(userMapper.toDto(user));
+        if(userRepository.findUserByEmail(user.getEmail())!=null){
+            System.out.println("email already exist");
+            return ResponseEntity
+                    .status(HttpStatus.CONFLICT)
+                    .body(null);
+        }else{
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            userRepository.save(user);
+
+            URI uri = uriComponentsBuilder.path("/user/{id}").buildAndExpand(user.getId()).toUri();
+            return ResponseEntity.created(uri).body(userMapper.toDto(user));
+        }
     }
 
 

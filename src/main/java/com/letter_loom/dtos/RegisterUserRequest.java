@@ -4,11 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.mapstruct.Mapping;
 
 @Getter
 @Setter
 @AllArgsConstructor
-@Builder
 public class RegisterUserRequest {
     private String username;
     private String firstname;

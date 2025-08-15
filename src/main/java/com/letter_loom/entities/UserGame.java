@@ -15,7 +15,7 @@ import lombok.Setter;
 @Table(name = "user_games")
 public class UserGame {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne

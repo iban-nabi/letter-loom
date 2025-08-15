@@ -3,6 +3,7 @@ package com.letter_loom.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -24,7 +25,8 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(c -> c
                         .requestMatchers("/get-leaderboards/").permitAll()
-                        .anyRequest().authenticated());
+                        .requestMatchers(HttpMethod.POST,"/user").permitAll()
+                        .anyRequest().permitAll());
 
         return http.build();
     }
