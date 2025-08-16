@@ -3,6 +3,8 @@ package com.letter_loom.controllers;
 import com.letter_loom.entities.Game;
 import com.letter_loom.repositories.GameRepository;
 import com.letter_loom.services.GameLobbyService;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -18,12 +20,11 @@ public class GameLobbyController {
     }
 
     public void joinRandomGame(Long userId){
-        // get the list of games, if there is a game available, join there
-        //else create a new game
+
     }
 
-    public void createGame(Game game){
-        gameRepository.save(game);
+    public void createGame(){
+
     }
 
     public List<Game> getGames(){

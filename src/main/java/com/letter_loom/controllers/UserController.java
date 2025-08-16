@@ -2,6 +2,7 @@ package com.letter_loom.controllers;
 
 import com.letter_loom.dtos.request_dto.RegisterUserRequest;
 import com.letter_loom.dtos.request_dto.UpdateUserRequest;
+import com.letter_loom.dtos.request_dto.UserPasswordRequest;
 import com.letter_loom.dtos.response_dto.UserResponse;
 import com.letter_loom.entities.User;
 import com.letter_loom.mappers.UserMapper;
@@ -61,12 +62,34 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest request){
+    public ResponseEntity<UserResponse> updateUser(
+            @PathVariable Long id,
+            @RequestBody UpdateUserRequest request){
         User user = userRepository.findById(id).orElse(null);
         if(user!=null){
             userMapper.updateEntity(request, user);
             userRepository.save(user);
             return ResponseEntity.ok(userMapper.toDto(user));
+        }else{
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PostMapping("/{id}/change-password")
+    public ResponseEntity<Void> changePassword(
+            @PathVariable Long id,
+            @RequestBody UserPasswordRequest userPasswordRequest){
+
+        User user = userRepository.findById(id).orElse(null);
+
+        if(user!=null){
+            if(passwordEncoder.matches(userPasswordRequest.getOldPassword(), user.getPassword())){
+                user.setPassword(passwordEncoder.encode(userPasswordRequest.getNewPassword()));
+                userRepository.save(user);
+                return ResponseEntity.ok().build();
+            }else{
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+            }
         }else{
             return ResponseEntity.notFound().build();
         }
