@@ -1,7 +1,6 @@
-package com.letter_loom.dtos;
+package com.letter_loom.dtos.response_dto;
 
 
-import com.letter_loom.entities.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +10,7 @@ import lombok.Setter;
 @Setter
 @Builder
 @AllArgsConstructor
-public class LeaderboardScoresDto {
+public class LeaderboardScoresResponse {
     private Long userId;
     private String username;
     private Long score;

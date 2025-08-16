@@ -1,18 +1,16 @@
-package com.letter_loom.dtos;
+package com.letter_loom.dtos.request_dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.mapstruct.Mapping;
 
 @Getter
 @Setter
 @AllArgsConstructor
 public class RegisterUserRequest {
     private String username;
-    private String firstname;
-    private String lastname;
+    private String firstName;
+    private String lastName;
     private String email;
     private String password;
 }

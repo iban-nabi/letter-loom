@@ -1,4 +1,4 @@
-package com.letter_loom.dtos;
+package com.letter_loom.dtos.response_dto;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class LeaderboardWinsDto {
+public class LeaderboardWinsResponse {
     private Long userId;
     private String username;
     private Long noOfWins;

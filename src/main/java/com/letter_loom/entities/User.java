@@ -25,10 +25,10 @@ public class User {
     private String username;
 
     @Column(name = "firstname")
-    private String firstname;
+    private String firstName;
 
     @Column(name = "lastname")
-    private String lastname;
+    private String lastName;
 
     @Column(name = "email", nullable = false, unique = true)
     private String email;

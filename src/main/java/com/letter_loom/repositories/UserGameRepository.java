@@ -1,6 +1,6 @@
 package com.letter_loom.repositories;
 
-import com.letter_loom.dtos.LeaderboardScoresDto;
+import com.letter_loom.dtos.response_dto.LeaderboardScoresResponse;
 import com.letter_loom.entities.UserGame;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -14,7 +14,7 @@ public interface UserGameRepository extends JpaRepository<UserGame, Long> {
 
     // get game leaderboards computing score
     @Query("SELECT ug.user.id, ug.user.username, SUM(ug.score) FROM UserGame ug GROUP BY ug.user")
-    List<LeaderboardScoresDto> getUserGamesGroupByScore();
+    List<LeaderboardScoresResponse> getUserGamesGroupByScore();
 
     // get game history of users
 

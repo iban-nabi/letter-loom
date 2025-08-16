@@ -1,9 +1,8 @@
 package com.letter_loom.services;
 
-import com.letter_loom.dtos.LeaderboardScoresDto;
-import com.letter_loom.dtos.LeaderboardWinsDto;
+import com.letter_loom.dtos.response_dto.LeaderboardScoresResponse;
+import com.letter_loom.dtos.response_dto.LeaderboardWinsResponse;
 import com.letter_loom.entities.GameWinner;
-import com.letter_loom.entities.UserGame;
 import com.letter_loom.repositories.GameWinnerRepository;
 import com.letter_loom.repositories.UserGameRepository;
 import lombok.AllArgsConstructor;
@@ -21,10 +20,10 @@ public class LeaderboardService {
     private final GameWinnerRepository gameWinnerRepository;
     private final UserGameRepository userGameRepository;
 
-    public List<LeaderboardWinsDto> getLeaderboardWinInfo(){
+    public List<LeaderboardWinsResponse> getLeaderboardWinInfo(){
         List<GameWinner> gameWinners = gameWinnerRepository.findAll();
-        Map<Long, LeaderboardWinsDto> leaderboardInfoDtoMap = new HashMap<>();
-        LeaderboardWinsDto userLeaderboardInfoDto;
+        Map<Long, LeaderboardWinsResponse> leaderboardInfoDtoMap = new HashMap<>();
+        LeaderboardWinsResponse userLeaderboardInfoDto;
 
         for (GameWinner gameWinner : gameWinners) {
             Long id = gameWinner.getUser().getId();
@@ -33,7 +32,7 @@ public class LeaderboardService {
                 userLeaderboardInfoDto.setNoOfWins(userLeaderboardInfoDto.getNoOfWins()+1);
 
             }else{
-                userLeaderboardInfoDto = LeaderboardWinsDto.builder()
+                userLeaderboardInfoDto = LeaderboardWinsResponse.builder()
                         .userId(gameWinner.getUser().getId())
                         .username(gameWinner.getUser().getUsername())
                         .noOfWins(1L)
@@ -46,16 +45,16 @@ public class LeaderboardService {
         return populateLeaderBoardList(leaderboardInfoDtoMap);
     }
 
-    private static List<LeaderboardWinsDto> populateLeaderBoardList(Map<Long, LeaderboardWinsDto>
+    private static List<LeaderboardWinsResponse> populateLeaderBoardList(Map<Long, LeaderboardWinsResponse>
                                                                                 leaderboardInfoDtoMap){
-        List<LeaderboardWinsDto> leaderboardInfoDtoList = new ArrayList<>();
-        for(Map.Entry<Long, LeaderboardWinsDto> entry : leaderboardInfoDtoMap.entrySet()){
+        List<LeaderboardWinsResponse> leaderboardInfoDtoList = new ArrayList<>();
+        for(Map.Entry<Long, LeaderboardWinsResponse> entry : leaderboardInfoDtoMap.entrySet()){
             leaderboardInfoDtoList.add(entry.getValue());
         }
         return leaderboardInfoDtoList;
     }
 
-    public List<LeaderboardScoresDto> getLeaderboardScoreInfo() {
+    public List<LeaderboardScoresResponse> getLeaderboardScoreInfo() {
         return userGameRepository.getUserGamesGroupByScore();
     }
 }

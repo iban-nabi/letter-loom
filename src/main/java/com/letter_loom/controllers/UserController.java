@@ -1,7 +1,8 @@
 package com.letter_loom.controllers;
 
-import com.letter_loom.dtos.RegisterUserRequest;
-import com.letter_loom.dtos.UserDto;
+import com.letter_loom.dtos.request_dto.RegisterUserRequest;
+import com.letter_loom.dtos.request_dto.UpdateUserRequest;
+import com.letter_loom.dtos.response_dto.UserResponse;
 import com.letter_loom.entities.User;
 import com.letter_loom.mappers.UserMapper;
 import com.letter_loom.repositories.UserRepository;
@@ -24,7 +25,7 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/register-user")
-    public ResponseEntity<UserDto> registerUser(
+    public ResponseEntity<UserResponse> registerUser(
             UriComponentsBuilder uriComponentsBuilder,
             @RequestBody RegisterUserRequest request){
 
@@ -50,7 +51,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserDto> getUserDetails(@PathVariable Long id){
+    public ResponseEntity<UserResponse> getUserDetails(@PathVariable Long id){
         User user = userRepository.findById(id).orElse(null);
         if(user!=null){
             return ResponseEntity.ok(userMapper.toDto(user));
@@ -59,7 +60,17 @@ public class UserController {
         }
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<UserResponse> updateUser(@PathVariable Long id, @RequestBody UpdateUserRequest request){
+        User user = userRepository.findById(id).orElse(null);
+        if(user!=null){
+            userMapper.updateEntity(request, user);
+            userRepository.save(user);
+            return ResponseEntity.ok(userMapper.toDto(user));
+        }else{
+            return ResponseEntity.notFound().build();
+        }
+    }
 
-    public void updateUser(){}
     public void deleteUser(){}
 }
