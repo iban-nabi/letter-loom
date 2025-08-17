@@ -7,6 +7,7 @@ import com.letter_loom.dtos.response_dto.UserResponse;
 import com.letter_loom.entities.User;
 import com.letter_loom.mappers.UserMapper;
 import com.letter_loom.repositories.UserRepository;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,12 +29,11 @@ public class UserController {
     @PostMapping("/register-user")
     public ResponseEntity<UserResponse> registerUser(
             UriComponentsBuilder uriComponentsBuilder,
-            @RequestBody RegisterUserRequest request){
+            @Valid @RequestBody RegisterUserRequest request){
 
         User user = userMapper.toEntity(request);
 
         if(userRepository.findUserByEmail(user.getEmail())!=null){
-            System.out.println("email already exist");
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
                     .body(null);
@@ -64,7 +64,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<UserResponse> updateUser(
             @PathVariable Long id,
-            @RequestBody UpdateUserRequest request){
+            @Valid @RequestBody UpdateUserRequest request){
         User user = userRepository.findById(id).orElse(null);
         if(user!=null){
             userMapper.updateEntity(request, user);
@@ -78,7 +78,7 @@ public class UserController {
     @PostMapping("/{id}/change-password")
     public ResponseEntity<Void> changePassword(
             @PathVariable Long id,
-            @RequestBody UserPasswordRequest userPasswordRequest){
+            @Valid @RequestBody UserPasswordRequest userPasswordRequest){
 
         User user = userRepository.findById(id).orElse(null);
 
