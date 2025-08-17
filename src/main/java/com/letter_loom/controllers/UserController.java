@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -27,16 +28,15 @@ public class UserController {
     private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/register-user")
-    public ResponseEntity<UserResponse> registerUser(
+    public ResponseEntity<?> registerUser(
             UriComponentsBuilder uriComponentsBuilder,
             @Valid @RequestBody RegisterUserRequest request){
 
         User user = userMapper.toEntity(request);
-
-        if(userRepository.findUserByEmail(user.getEmail())!=null){
+        if(userRepository.existByEmail(user.getEmail())){
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
-                    .body(null);
+                    .body(Map.of("email", "Email is already registered"));
         }else{
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             userRepository.save(user);
@@ -45,7 +45,6 @@ public class UserController {
             return ResponseEntity.created(uri).body(userMapper.toDto(user));
         }
     }
-
 
     public void loginUser(){
 

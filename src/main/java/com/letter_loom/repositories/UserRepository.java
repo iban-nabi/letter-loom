@@ -4,15 +4,6 @@ import com.letter_loom.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<User, Long> {
-    // create user
-
-    // retrieve user
     User findById(long id);
-
-    User findUserByEmail(String email);
-
-    // update user
-    //User updateUserById(Long id, User user);
-
-    // delete user
+    boolean existByEmail(String email);
 }
