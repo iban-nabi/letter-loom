@@ -1,5 +1,6 @@
 package com.letter_loom.controllers;
 
+import com.letter_loom.dtos.request_dto.LoginUserRequest;
 import com.letter_loom.dtos.request_dto.RegisterUserRequest;
 import com.letter_loom.dtos.request_dto.UpdateUserRequest;
 import com.letter_loom.dtos.request_dto.UserPasswordRequest;
@@ -33,7 +34,7 @@ public class UserController {
             @Valid @RequestBody RegisterUserRequest request){
 
         User user = userMapper.toEntity(request);
-        if(userRepository.existByEmail(user.getEmail())){
+        if(userRepository.existsByEmail(user.getEmail())){
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
                     .body(Map.of("email", "Email is already registered"));
@@ -44,10 +45,6 @@ public class UserController {
             URI uri = uriComponentsBuilder.path("/user/{id}").buildAndExpand(user.getId()).toUri();
             return ResponseEntity.created(uri).body(userMapper.toDto(user));
         }
-    }
-
-    public void loginUser(){
-
     }
 
     @GetMapping("/{id}")

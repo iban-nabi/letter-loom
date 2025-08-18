@@ -1,5 +1,6 @@
 package com.letter_loom.mappers;
 
+import com.letter_loom.dtos.request_dto.LoginUserRequest;
 import com.letter_loom.dtos.request_dto.RegisterUserRequest;
 import com.letter_loom.dtos.request_dto.UpdateUserRequest;
 import com.letter_loom.dtos.response_dto.UserResponse;
@@ -12,5 +13,6 @@ import org.mapstruct.MappingTarget;
 public interface UserMapper {
     UserResponse toDto(User user);
     User toEntity(RegisterUserRequest registerUserRequest);
+    User toEntity(LoginUserRequest loginUserRequest);
     void updateEntity(UpdateUserRequest updateUserRequest, @MappingTarget User user);
 }
