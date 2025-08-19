@@ -36,6 +36,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(c -> c
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST,"/user/register-user").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/auth/validate").permitAll()
                         .anyRequest().authenticated());
 
         return http.build();

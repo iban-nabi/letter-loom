@@ -1,6 +1,8 @@
 package com.letter_loom.controllers;
 
 import com.letter_loom.dtos.request_dto.LoginUserRequest;
+import com.letter_loom.dtos.response_dto.JwtResponse;
+import com.letter_loom.services.JwtService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,16 +18,25 @@ import java.util.Map;
 @AllArgsConstructor
 public class AuthController {
     private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@Valid @RequestBody LoginUserRequest request){
+    public ResponseEntity<JwtResponse> loginUser(@Valid @RequestBody LoginUserRequest request){
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                         request.getUsername(),
                         request.getPassword()
                 )
         );
-        return ResponseEntity.ok().build();
+
+        String token = jwtService.generateToken(request.getUsername());
+        return ResponseEntity.ok(new JwtResponse(token));
     }
+
+//    @PostMapping("/validate")
+//    public boolean validate(@RequestHeader("Authorization") String authHeader){
+//        authHeader = authHeader.replace("Bearer ", "");
+//        return jwtService.validateToken(authHeader);
+//    }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<?> handleBadCredentialsException(){
