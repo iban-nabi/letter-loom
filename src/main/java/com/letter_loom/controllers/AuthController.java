@@ -31,27 +31,23 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> loginUser(@Valid @RequestBody LoginUserRequest request){
+        //authenticate the user through the authentication manager using the username and password
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                         request.getUsername(),
                         request.getPassword()
                 )
-        );
+        ); // BadCredentialsException will be thrown if error in logging in
 
         User user = userRepository.findByUsername(request.getUsername());
-        String token = jwtService.generateToken(user);
-        return ResponseEntity.ok(new JwtResponse(token));
-    }
-
-    @GetMapping("/validate")
-    public boolean validate(@RequestHeader("Authorization") String authHeader){
-        authHeader = authHeader.replace("Bearer ", "");
-        return jwtService.validateToken(authHeader);
+        String token = jwtService.generateToken(user); //create a token
+        return ResponseEntity.ok(new JwtResponse(token)); //return JWT Token
     }
 
     @GetMapping("/me")
     public ResponseEntity<UserResponse> me(){
         //retrieve user's authentication token stored in SecurityContextHolder
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        // retrieve the ID from the authentication token (ID is set as the subject)
         Long id = (Long) authentication.getPrincipal();
 
         User user = userRepository.findById(id).orElseThrow();
