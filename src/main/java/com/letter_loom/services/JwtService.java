@@ -1,5 +1,6 @@
 package com.letter_loom.services;
 
+import com.letter_loom.entities.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -14,10 +15,13 @@ public class JwtService {
     @Value("${spring.jwt.secret}")
     private String secret;
 
-    public String generateToken(String username) {
+    public String generateToken(User user) {
         final long tokenExpiration = 86400; // token available for one day
         return Jwts.builder()
-                .subject(username)
+                .subject(user.getId().toString())
+                .claim("username", user.getUsername())
+                .claim("firstName", user.getFirstName())
+                .claim("lastName", user.getLastName())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpiration))
                 .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
