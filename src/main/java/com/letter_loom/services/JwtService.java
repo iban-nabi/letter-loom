@@ -1,5 +1,6 @@
 package com.letter_loom.services;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -23,18 +24,24 @@ public class JwtService {
                 .compact();
     }
 
+    public Claims getClaims(String token){
+        return Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
+
     public boolean validateToken(String token) {
         try{
-            var claims = Jwts.parser()
-                    .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
-                    .build()
-                    .parseSignedClaims(token)
-                    .getPayload();
-
+            Claims claims = getClaims(token);
             return claims.getExpiration().after(new Date());
-
         }catch(JwtException e){
             return false;
         }
+    }
+
+    public String getSubject(String token){
+        return getClaims(token).getSubject();
     }
 }

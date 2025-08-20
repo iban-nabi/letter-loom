@@ -90,6 +90,4 @@ public class UserController {
             return ResponseEntity.notFound().build();
         }
     }
-
-    public void deleteUser(){}
 }

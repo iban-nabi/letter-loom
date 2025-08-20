@@ -32,11 +32,11 @@ public class AuthController {
         return ResponseEntity.ok(new JwtResponse(token));
     }
 
-//    @PostMapping("/validate")
-//    public boolean validate(@RequestHeader("Authorization") String authHeader){
-//        authHeader = authHeader.replace("Bearer ", "");
-//        return jwtService.validateToken(authHeader);
-//    }
+    @GetMapping("/validate")
+    public boolean validate(@RequestHeader("Authorization") String authHeader){
+        authHeader = authHeader.replace("Bearer ", "");
+        return jwtService.validateToken(authHeader);
+    }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<?> handleBadCredentialsException(){
