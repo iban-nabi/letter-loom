@@ -12,6 +12,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.apache.coyote.Response;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -51,12 +53,27 @@ public class AuthController {
         // create a cookie for the generated refresh token for security purposes
         Cookie cookie = new Cookie("refreshToken", refreshToken);
         cookie.setHttpOnly(true);
-        cookie.setPath("/auth");
+        cookie.setPath("/auth/refresh-token");
         cookie.setMaxAge(jwtConfiguration.getRefreshTokenExpiration()); // 7 days
         cookie.setSecure(true);
         response.addCookie(cookie);
 
         return ResponseEntity.ok(new JwtResponse(accessToken)); //return JWT Token
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<JwtResponse> refreshAccessToken(
+            @CookieValue(value = "refreshToken") String refreshToken) {
+
+        if(!jwtService.validateToken(refreshToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        Long id = Long.parseLong(jwtService.getSubject(refreshToken));
+        User user = userRepository.findById(id).orElseThrow();
+        String accessToken = jwtService.generateRefreshToken(user);
+
+        return ResponseEntity.ok(new JwtResponse(accessToken));
     }
 
     @GetMapping("/me")

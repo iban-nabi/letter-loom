@@ -42,37 +42,6 @@ public class JwtService {
         return generateToken(user, jwtConfiguration.getRefreshTokenExpiration());
     }
 
-    public String generateToken(User user, long tokenExpirationSeconds) {
-        return Jwts.builder()
-                .subject(user.getId().toString()) // set user ID as subject
-                .claim("username", user.getUsername()) // include username claim
-                .claim("firstName", user.getFirstName()) // include first name claim
-                .claim("lastName", user.getLastName()) // include last name claim
-                .issuedAt(new Date()) // issue time
-                .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpirationSeconds)) // expiry time
-                .signWith(jwtConfiguration.getSecretKey()) // sign using HMAC with secret key
-                .compact(); // build and return token string
-    }
-
-    /**
-     * Parses and validates a JWT, then extracts its claims.
-     * The token is verified using the configured secret key.
-     *
-     * @param token the JWT string
-     * @return the Claims (payload) contained in the token
-     * @throws io.jsonwebtoken.JwtException if the token is invalid or expired
-     */
-    public Claims getClaims(String token) {
-        return Jwts.parser()
-                // verify the token's signature with the secret key
-                .verifyWith(jwtConfiguration.getSecretKey())
-                .build()
-                // parse the token and extract its claims (subject, expiration, custom fields, etc.)
-                .parseSignedClaims(token)
-                .getPayload(); // return the payload (Claims)
-    }
-
-
     /**
      * Validates a JWT token by checking its expiration.
      * If the token is invalid, malformed, or expired, it will return false.
@@ -89,6 +58,18 @@ public class JwtService {
         }
     }
 
+    private String generateToken(User user, long tokenExpirationSeconds) {
+        return Jwts.builder()
+                .subject(user.getId().toString()) // set user ID as subject
+                .claim("username", user.getUsername()) // include username claim
+                .claim("firstName", user.getFirstName()) // include first name claim
+                .claim("lastName", user.getLastName()) // include last name claim
+                .issuedAt(new Date()) // issue time
+                .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpirationSeconds)) // expiry time
+                .signWith(jwtConfiguration.getSecretKey()) // sign using HMAC with secret key
+                .compact(); // build and return token string
+    }
+
     /**
      * Retrieves the subject from the JWT string
      * @param token the JWT  string to validate
@@ -96,5 +77,24 @@ public class JwtService {
      */
     public String getSubject(String token){
         return getClaims(token).getSubject();
+    }
+
+
+    /**
+     * Parses and validates a JWT, then extracts its claims.
+     * The token is verified using the configured secret key.
+     *
+     * @param token the JWT string
+     * @return the Claims (payload) contained in the token
+     * @throws io.jsonwebtoken.JwtException if the token is invalid or expired
+     */
+    private Claims getClaims(String token) {
+        return Jwts.parser()
+                // verify the token's signature with the secret key
+                .verifyWith(jwtConfiguration.getSecretKey())
+                .build()
+                // parse the token and extract its claims (subject, expiration, custom fields, etc.)
+                .parseSignedClaims(token)
+                .getPayload(); // return the payload (Claims)
     }
 }
