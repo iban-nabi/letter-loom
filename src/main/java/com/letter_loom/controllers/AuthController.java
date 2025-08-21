@@ -1,5 +1,6 @@
 package com.letter_loom.controllers;
 
+import com.letter_loom.config.JwtConfiguration;
 import com.letter_loom.dtos.request_dto.LoginUserRequest;
 import com.letter_loom.dtos.response_dto.JwtResponse;
 import com.letter_loom.dtos.response_dto.UserResponse;
@@ -7,9 +8,10 @@ import com.letter_loom.entities.User;
 import com.letter_loom.mappers.UserMapper;
 import com.letter_loom.repositories.UserRepository;
 import com.letter_loom.services.JwtService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -28,9 +30,13 @@ public class AuthController {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final JwtConfiguration jwtConfiguration;
 
     @PostMapping("/login")
-    public ResponseEntity<JwtResponse> loginUser(@Valid @RequestBody LoginUserRequest request){
+    public ResponseEntity<JwtResponse> loginUser(
+            @Valid @RequestBody LoginUserRequest request,
+            HttpServletResponse response) {
+
         //authenticate the user through the authentication manager using the username and password
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                         request.getUsername(),
@@ -39,8 +45,18 @@ public class AuthController {
         ); // BadCredentialsException will be thrown if error in logging in
 
         User user = userRepository.findByUsername(request.getUsername());
-        String token = jwtService.generateToken(user); //create a token
-        return ResponseEntity.ok(new JwtResponse(token)); //return JWT Token
+        String accessToken = jwtService.generateAccessToken(user); //create an access token
+        String refreshToken = jwtService.generateRefreshToken(user); // create a refresh token
+
+        // create a cookie for the generated refresh token for security purposes
+        Cookie cookie = new Cookie("refreshToken", refreshToken);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/auth");
+        cookie.setMaxAge(jwtConfiguration.getRefreshTokenExpiration()); // 7 days
+        cookie.setSecure(true);
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok(new JwtResponse(accessToken)); //return JWT Token
     }
 
     @GetMapping("/me")
