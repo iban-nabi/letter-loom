@@ -5,6 +5,7 @@ import com.letter_loom.dtos.request_dto.RegisterUserRequest;
 import com.letter_loom.dtos.request_dto.UpdateUserRequest;
 import com.letter_loom.dtos.request_dto.UserPasswordRequest;
 import com.letter_loom.dtos.response_dto.UserResponse;
+import com.letter_loom.entities.Role;
 import com.letter_loom.entities.User;
 import com.letter_loom.mappers.UserMapper;
 import com.letter_loom.repositories.UserRepository;
@@ -40,6 +41,7 @@ public class UserController {
                     .body(Map.of("email", "Email is already registered"));
         }else{
             user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setRole(Role.PLAYER);
             userRepository.save(user);
 
             URI uri = uriComponentsBuilder.path("/user/{id}").buildAndExpand(user.getId()).toUri();

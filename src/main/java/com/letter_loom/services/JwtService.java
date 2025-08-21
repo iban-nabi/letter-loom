@@ -2,6 +2,7 @@ package com.letter_loom.services;
 
 import com.letter_loom.config.JwtConfiguration;
 import com.letter_loom.entities.User;
+import com.letter_loom.objects.Jwt;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
@@ -25,8 +26,8 @@ public class JwtService {
      * @param user the User entity containing user information
      * @return a signed JWT string
      */
-    public String generateAccessToken(User user) {
-        return generateToken(user, jwtConfiguration.getAccessTokenExpiration());
+    public Jwt generateAccessToken(User user) {
+        return generateJwt(user, jwtConfiguration.getAccessTokenExpiration());
     }
 
     /**
@@ -38,46 +39,66 @@ public class JwtService {
      * @param user the User entity containing user information
      * @return a signed JWT string
      */
-    public String generateRefreshToken(User user) {
-        return generateToken(user, jwtConfiguration.getRefreshTokenExpiration());
+    public Jwt generateRefreshToken(User user) {
+        return generateJwt(user, jwtConfiguration.getRefreshTokenExpiration());
     }
 
-    /**
-     * Validates a JWT token by checking its expiration.
-     * If the token is invalid, malformed, or expired, it will return false.
-     *
-     * @param token the JWT string to validate
-     * @return true if the token is valid and not expired, false otherwise
-     */
-    public boolean validateToken(String token) {
-        try {
-            Claims claims = getClaims(token); // extract claims from the token
-            return claims.getExpiration().after(new Date()); // check if expiration is still in the future
-        } catch (JwtException e) { // thrown if the token is invalid, tampered, or expired
-            return false; // token is not valid
+    private Jwt generateJwt(User user, long expiration) {
+        Claims claims = Jwts.claims()
+                .subject(user.getId().toString()) // set user ID as subject
+                .add("username", user.getUsername()) // include username claim
+                .add("firstName", user.getFirstName()) // include first name claim
+                .add("lastName", user.getLastName()) // include last name claim
+                .add("role", user.getRole()) // include the role of the user
+                .issuedAt(new Date()) // issue time
+                .expiration(new Date(System.currentTimeMillis() + 1000 * expiration)) // expiry time
+                .build(); // build and return token string
+
+        return new Jwt(claims,jwtConfiguration.getSecretKey());
+    }
+
+    public Jwt parseToken(String token) {
+        try{
+            Claims claims = Jwts.parser()
+                    // verify the token's signature with the secret key
+                    .verifyWith(jwtConfiguration.getSecretKey())
+                    .build()
+                    // parse the token and extract its claims (subject, expiration, custom fields, etc.)
+                    .parseSignedClaims(token)
+                    .getPayload(); // return the payload (Claims)
+            return new Jwt(claims,jwtConfiguration.getSecretKey());
+        }catch(JwtException e){
+            return null;
         }
     }
 
-    private String generateToken(User user, long tokenExpirationSeconds) {
-        return Jwts.builder()
-                .subject(user.getId().toString()) // set user ID as subject
-                .claim("username", user.getUsername()) // include username claim
-                .claim("firstName", user.getFirstName()) // include first name claim
-                .claim("lastName", user.getLastName()) // include last name claim
-                .issuedAt(new Date()) // issue time
-                .expiration(new Date(System.currentTimeMillis() + 1000 * tokenExpirationSeconds)) // expiry time
-                .signWith(jwtConfiguration.getSecretKey()) // sign using HMAC with secret key
-                .compact(); // build and return token string
-    }
+
+//    public boolean validateToken(String token) {
+//        try {
+//            Claims claims = getClaims(token); // extract claims from the token
+//            return claims.getExpiration().after(new Date()); // check if expiration is still in the future
+//        } catch (JwtException e) { // thrown if the token is invalid, tampered, or expired
+//            return false; // token is not valid
+//        }
+//    }
 
     /**
      * Retrieves the subject from the JWT string
      * @param token the JWT  string to validate
      * @return the subject from the JWT
      */
-    public String getSubject(String token){
-        return getClaims(token).getSubject();
-    }
+//    public String getSubject(String token){
+//        return getClaims(token).getSubject();
+//    }
+
+    /**
+//     * Retrieves the role of a user from the JWT string
+//     * @param token the JWT  string to validate
+//     * @return the subject from the JWT
+//     */
+//    public Role getRole(String token){
+//        return Role.valueOf(getClaims(token).get("role", String.class));
+//    }
 
 
     /**
@@ -88,13 +109,13 @@ public class JwtService {
      * @return the Claims (payload) contained in the token
      * @throws io.jsonwebtoken.JwtException if the token is invalid or expired
      */
-    private Claims getClaims(String token) {
-        return Jwts.parser()
-                // verify the token's signature with the secret key
-                .verifyWith(jwtConfiguration.getSecretKey())
-                .build()
-                // parse the token and extract its claims (subject, expiration, custom fields, etc.)
-                .parseSignedClaims(token)
-                .getPayload(); // return the payload (Claims)
-    }
+//    private Claims getClaims(String token) {
+//        return Jwts.parser()
+//                // verify the token's signature with the secret key
+//                .verifyWith(jwtConfiguration.getSecretKey())
+//                .build()
+//                // parse the token and extract its claims (subject, expiration, custom fields, etc.)
+//                .parseSignedClaims(token)
+//                .getPayload(); // return the payload (Claims)
+//    }
 }
