@@ -9,6 +9,7 @@ import com.letter_loom.mappers.UserMapper;
 import com.letter_loom.objects.Jwt;
 import com.letter_loom.repositories.UserRepository;
 import com.letter_loom.services.JwtService;
+import com.letter_loom.utilities.AuthenticationContextHelper;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -33,6 +34,7 @@ public class AuthController {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final JwtConfiguration jwtConfiguration;
+    private final AuthenticationContextHelper authHelper;
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> loginUser(
@@ -67,7 +69,6 @@ public class AuthController {
 
         Jwt jwt = jwtService.parseToken(refreshToken);
         if(jwt==null || jwt.isExpired()) {
-            System.out.println("I am here");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
@@ -80,11 +81,7 @@ public class AuthController {
 
     @GetMapping("/me")
     public ResponseEntity<UserResponse> me(){
-        //retrieve user's authentication token stored in SecurityContextHolder
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        // retrieve the ID from the authentication token (ID is set as the subject)
-        Long id = (Long) authentication.getPrincipal();
-
+        Long id = authHelper.getUserIdFromAuthToken();
         User user = userRepository.findById(id).orElseThrow();
         return ResponseEntity.ok(userMapper.toDto(user));
     }
