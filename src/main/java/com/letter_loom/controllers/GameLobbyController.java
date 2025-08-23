@@ -12,6 +12,7 @@ import com.letter_loom.services.GameLobbyService;
 import com.letter_loom.services.UserService;
 import com.letter_loom.utilities.AuthenticationContextHelper;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,14 +26,32 @@ import java.util.List;
 public class GameLobbyController {
     private final GameRepository gameRepository;
     private final UserRepository userRepository;
-
     private final AuthenticationContextHelper authHelper;
     private final GameLobbyService gameLobbyService;
     private final UserService userService;
 
     @PostMapping("/join-game")
     public void joinRandomGame(){
+        User user = userService.getUser();
 
+        // get a game where status is ongoing and the size of user games is less than the number of size
+        Game game = gameRepository.findOngoingGame(PageRequest.of(0, 1))
+                .stream()
+                .findFirst()
+                .orElse(null);
+
+        // if game is null, create a new game
+        if(game == null){
+            game = gameLobbyService.createGame(user,5);
+        }
+
+        // create a new user game
+        UserGame ug = gameLobbyService.createUserGame(user,game);
+        game.getGames().add(ug);
+
+        if(game.getGames().size()==game.getPlayerCount()){
+            gameLobbyService.startGame(game);
+        }
     }
 
     @PostMapping("/create-game")

@@ -35,11 +35,18 @@ public class GameLobbyService {
     }
 
     @Transactional
-    public void createUserGame(User user, Game game){
+    public UserGame createUserGame(User user, Game game){
         UserGame userGame = UserGame.builder()
                 .user(user)
                 .game(game)
                 .build();
         userGameRepository.save(userGame);
+
+        return userGame;
+    }
+
+    public void startGame(Game game) {
+        game.setStatus(GameStatus.ongoing);
+        gameRepository.save(game);
     }
 }
