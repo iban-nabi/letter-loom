@@ -4,6 +4,7 @@ import com.letter_loom.entities.GameStatus;
 import com.letter_loom.entities.GameWinner;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalTime;
@@ -12,6 +13,7 @@ import java.util.Date;
 @Setter
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class GameResponse {
     private Long id;
     private GameStatus status;

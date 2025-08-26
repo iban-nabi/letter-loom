@@ -43,6 +43,9 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST,"/user/register-user").permitAll()
                         .requestMatchers(HttpMethod.POST, "auth/refresh-token").permitAll()
+                        .requestMatchers("/game-endpoint/**").permitAll()
+                        .requestMatchers("/game-client/**").permitAll()
+                        .requestMatchers("/game/**").permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(c->{
