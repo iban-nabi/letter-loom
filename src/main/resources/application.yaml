@@ -11,3 +11,6 @@ spring:
     secret: ${JWT_SECRET}
     accessTokenExpiration : 900 # 15 mins
     refreshTokenExpiration: 604800 # 7 days
+
+dictionary:
+  apiUrl: ${DICTIONARY_API}
