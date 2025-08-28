@@ -4,6 +4,8 @@ import com.letter_loom.entities.Game;
 import com.letter_loom.entities.GameStatus;
 import com.letter_loom.entities.User;
 import com.letter_loom.entities.UserGame;
+import com.letter_loom.objects.GameState;
+import com.letter_loom.objects.Player;
 import com.letter_loom.repositories.GameRepository;
 import com.letter_loom.repositories.UserGameRepository;
 import jakarta.transaction.Transactional;
@@ -12,16 +14,22 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 @Service
 @AllArgsConstructor
 public class GameLobbyService {
+    //Repositories
     private final UserGameRepository userGameRepository;
     private final GameRepository gameRepository;
 
+    //Services
+    GameStateService gameStateService;
+
     @Transactional
-    public Game createGame(User user, int playerSize){
+    public Game createGame(int playerSize){
         Game game = Game.builder()
                 .status(GameStatus.ongoing)
                 .date(LocalDate.now())
@@ -29,8 +37,7 @@ public class GameLobbyService {
                 .playerCount(playerSize)
                 .build();
         gameRepository.save(game);
-
-        createUserGame(user, game);
+        gameStateService.createGameState(game);
         return game;
     }
 
@@ -41,7 +48,7 @@ public class GameLobbyService {
                 .game(game)
                 .build();
         userGameRepository.save(userGame);
-
+        gameStateService.joinGameState(game,user);
         return userGame;
     }
 
@@ -49,4 +56,5 @@ public class GameLobbyService {
         game.setStatus(GameStatus.ongoing);
         gameRepository.save(game);
     }
+
 }

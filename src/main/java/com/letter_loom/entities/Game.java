@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import lombok.*;
@@ -36,7 +35,7 @@ public class Game {
     private LocalTime timeEnd;
 
     @OneToMany(mappedBy = "game")
-    private List<UserGame> games = new ArrayList<>();
+    private List<UserGame> userGames = new ArrayList<>();
 
     @OneToOne(mappedBy = "game")
     private GameWinner gameWinner;

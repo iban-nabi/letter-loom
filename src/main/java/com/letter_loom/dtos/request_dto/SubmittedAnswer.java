@@ -10,6 +10,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SubmittedAnswer {
+    private Long gameId;
     private String username;
     private String answer;
 }

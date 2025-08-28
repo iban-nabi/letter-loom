@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface GameRepository extends JpaRepository<Game, Long> {
 
-    @Query("SELECT g FROM Game g WHERE g.status = 'ongoing' AND SIZE(g.games) < g.playerCount ORDER BY g.id ASC")
+    @Query("SELECT g FROM Game g WHERE g.status = 'ongoing' AND SIZE(g.userGames) < g.playerCount ORDER BY g.id ASC")
     List<Game> findOngoingGame(Pageable pageable);
 
     // Get All Available Games

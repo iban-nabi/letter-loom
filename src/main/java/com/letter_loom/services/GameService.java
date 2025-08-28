@@ -1,19 +1,23 @@
 package com.letter_loom.services;
 
-import lombok.AllArgsConstructor;
+import com.letter_loom.entities.Game;
+import com.letter_loom.entities.User;
+import com.letter_loom.objects.GameState;
+import com.letter_loom.objects.Player;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
 public class GameService {
+    //Services
+    GameStateService gameStateService;
+
     //for letter generator
     private static final String vowels = "AEIOU";
     private static final String consonants = "BCDFGHJKLMNPQRSTVWXYZ";
@@ -48,8 +52,11 @@ public class GameService {
         return response != null && !response.contains("No Definitions Found") && !response.contains("\"title\"");
     }
 
+    public boolean verifyDuplicate(Long id, String word){
+        GameState gameState = gameStateService.getGameState(id);
+        return gameState.getSubmittedWords().add(word);
+    }
 
-    public void verifyDuplicate(){}
     public void generatePoints(){}
     public void identifyWinner(){}
     public void startTimer(){}

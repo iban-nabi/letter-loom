@@ -18,7 +18,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
 
     // Configures message routing between client and server
     public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.enableSimpleBroker("/game-client"); // server -> client responses (SUBSCRIBE endpoints)
+        registry.enableSimpleBroker("/game-room"); // server -> client responses (SUBSCRIBE endpoints)
         registry.setApplicationDestinationPrefixes("/game"); // client -> server requests (SEND endpoints)
     }
 

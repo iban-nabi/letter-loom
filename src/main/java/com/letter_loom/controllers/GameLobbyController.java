@@ -6,18 +6,14 @@ import com.letter_loom.entities.GameStatus;
 import com.letter_loom.entities.User;
 import com.letter_loom.entities.UserGame;
 import com.letter_loom.repositories.GameRepository;
-import com.letter_loom.repositories.UserGameRepository;
-import com.letter_loom.repositories.UserRepository;
 import com.letter_loom.services.GameLobbyService;
 import com.letter_loom.services.UserService;
-import com.letter_loom.utilities.AuthenticationContextHelper;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 @RestController
@@ -25,15 +21,13 @@ import java.util.List;
 @AllArgsConstructor
 public class GameLobbyController {
     private final GameRepository gameRepository;
-    private final UserRepository userRepository;
-    private final AuthenticationContextHelper authHelper;
     private final GameLobbyService gameLobbyService;
     private final UserService userService;
 
+    @Transactional
     @PostMapping("/join-game")
     public void joinRandomGame(){
         User user = userService.getUser();
-
         // get a game where status is ongoing and the size of user games is less than the number of size
         Game game = gameRepository.findOngoingGame(PageRequest.of(0, 1))
                 .stream()
@@ -42,14 +36,14 @@ public class GameLobbyController {
 
         // if game is null, create a new game
         if(game == null){
-            game = gameLobbyService.createGame(user,5);
+            game = gameLobbyService.createGame(5);
         }
 
         // create a new user game
         UserGame ug = gameLobbyService.createUserGame(user,game);
-        game.getGames().add(ug);
+        game.getUserGames().add(ug);
 
-        if(game.getGames().size()==game.getPlayerCount()){
+        if(game.getUserGames().size()==game.getPlayerCount()){
             gameLobbyService.startGame(game);
         }
     }
@@ -57,7 +51,8 @@ public class GameLobbyController {
     @PostMapping("/create-game")
     public ResponseEntity<?> createGame(@RequestBody GameRequest gameRequest){
         User user = userService.getUser();
-        Game game = gameLobbyService.createGame(user, gameRequest.getPlayerCount());
+        Game game = gameLobbyService.createGame(gameRequest.getPlayerCount());
+        gameLobbyService.createUserGame(user,game);
         return ResponseEntity.ok(game);
     }
 
