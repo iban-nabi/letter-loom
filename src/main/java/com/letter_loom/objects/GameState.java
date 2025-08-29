@@ -5,9 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
@@ -16,10 +14,10 @@ import java.util.Set;
 public class GameState {
     private Long id;
     private List<Player> players;
-    private Set<String> submittedWords;
+    private List<GameRound> rounds = new ArrayList<>();
 
     public void addWord(String word) {
-        this.submittedWords.add(word);
+        this.rounds.getLast().getSubmittedWords().add(word);
     }
 
     public void addPlayer(Player player) {
@@ -28,5 +26,9 @@ public class GameState {
 
     public void removePlayer(Player player) {
         this.players.remove(player);
+    }
+
+    public void createRound(){
+        this.rounds.add(new GameRound());
     }
 }

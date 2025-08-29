@@ -1,16 +1,12 @@
 package com.letter_loom.services;
 
-import com.letter_loom.entities.Game;
-import com.letter_loom.entities.User;
 import com.letter_loom.objects.GameState;
-import com.letter_loom.objects.Player;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -49,15 +45,23 @@ public class GameService {
         RestTemplate restTemplate = new RestTemplate();
         String url = dictionaryApiUrl + "/" + word;
         String response = restTemplate.getForObject(url, String.class);
-        return response != null && !response.contains("No Definitions Found") && !response.contains("\"title\"");
+        return response != null
+                && !response.contains("No Definitions Found")
+                && !response.contains("\"title\"");
     }
 
-    public boolean verifyDuplicate(Long id, String word){
+    public boolean verifyNotDuplicate(Long id, String word){
         GameState gameState = gameStateService.getGameState(id);
         return gameState.getSubmittedWords().add(word);
     }
 
-    public void generatePoints(){}
+    public int generateScore(boolean valid){
+        if (valid) {
+            return 100;
+        }
+        return 0;
+    }
+
     public void identifyWinner(){}
     public void startTimer(){}
     public void stopTimer(){}

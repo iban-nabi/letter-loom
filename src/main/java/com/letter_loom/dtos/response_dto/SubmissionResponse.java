@@ -11,5 +11,5 @@ public class SubmissionResponse {
     private String userSubmitted;
     private String answer;
     private int score;
-    private boolean invalidAnswer;
+    private boolean validAnswer;
 }

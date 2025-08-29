@@ -20,10 +20,7 @@ import java.util.List;
 public class GameController {
 
     private final SimpMessagingTemplate messagingTemplate;
-    private final UserService userService;
     private final GameService gameService;
-    private final GameStateService gameStateService;
-
 
     @GetMapping("/get-letters")
     public ResponseEntity<List<Character>> getLetters(){
@@ -34,23 +31,20 @@ public class GameController {
     public void sendWord(@Payload SubmittedAnswer submittedAnswer){
         String destination = "/game-room/" + submittedAnswer.getGameId();
         SubmissionResponse submissionResponse;
-        if(gameService.verifyWord(submittedAnswer.getAnswer()) &&
-                gameService.verifyDuplicate(submittedAnswer.getGameId(),
-                        submittedAnswer.getAnswer())){
-            submissionResponse = SubmissionResponse.builder()
-                    .userSubmitted(submittedAnswer.getUsername())
-                    .score(100) // to update calculations
-                    .answer(submittedAnswer.getAnswer())
-                    .invalidAnswer(false)
-                    .build();
-        }else{
-            submissionResponse = SubmissionResponse.builder()
-                    .userSubmitted(submittedAnswer.getUsername())
-                    .score(0)
-                    .answer(submittedAnswer.getAnswer())
-                    .invalidAnswer(true)
-                    .build();
-        }
+
+        boolean valid = gameService.verifyWord(submittedAnswer.getAnswer()) &&
+                gameService.verifyNotDuplicate(submittedAnswer.getGameId(),
+                        submittedAnswer.getAnswer());
+
+        int score = gameService.generateScore(valid);
+
+        submissionResponse = SubmissionResponse.builder()
+                .userSubmitted(submittedAnswer.getUsername())
+                .score(score)
+                .answer(submittedAnswer.getAnswer())
+                .validAnswer(valid)
+                .build();
+
         messagingTemplate.convertAndSend(destination, submissionResponse);
     }
 

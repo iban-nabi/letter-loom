@@ -79,13 +79,6 @@ public class AuthController {
         return ResponseEntity.ok(new JwtResponse(accessToken));
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<UserResponse> me(){
-        Long id = authHelper.getUserIdFromAuthToken();
-        User user = userRepository.findById(id).orElseThrow();
-        return ResponseEntity.ok(userMapper.toDto(user));
-    }
-
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<?> handleBadCredentialsException(){
         return ResponseEntity.status(401).body(Map.of("login error", "Invalid Credentials"));
