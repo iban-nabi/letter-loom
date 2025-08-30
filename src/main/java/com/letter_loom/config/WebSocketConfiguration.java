@@ -11,9 +11,9 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer {
     // Initialize handshake between client and server
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/game-socket").withSockJS();
-//        registry.addEndpoint("/game-socket")
-//                .setAllowedOriginPatterns("*");
+        registry.addEndpoint("/game-socket")
+                .setAllowedOriginPatterns("*")
+                .withSockJS();
     }
 
     // Configures message routing between client and server

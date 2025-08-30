@@ -16,8 +16,8 @@ public class GameState {
     private List<Player> players;
     private List<GameRound> rounds = new ArrayList<>();
 
-    public void addWord(String word) {
-        this.rounds.getLast().getSubmittedWords().add(word);
+    public boolean addWord(String word) {
+        return this.rounds.getLast().getSubmittedWords().add(word);
     }
 
     public void addPlayer(Player player) {

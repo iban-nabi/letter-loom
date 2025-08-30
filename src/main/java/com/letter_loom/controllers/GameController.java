@@ -36,6 +36,8 @@ public class GameController {
                 gameService.verifyNotDuplicate(submittedAnswer.getGameId(),
                         submittedAnswer.getAnswer());
 
+//        boolean valid = gameService.verifyWord(submittedAnswer.getAnswer());
+
         int score = gameService.generateScore(valid);
 
         submissionResponse = SubmissionResponse.builder()

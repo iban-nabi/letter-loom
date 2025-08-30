@@ -4,6 +4,7 @@ import com.letter_loom.objects.GameState;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
@@ -42,17 +43,19 @@ public class GameService {
     }
 
     public boolean verifyWord(String word) {
-        RestTemplate restTemplate = new RestTemplate();
-        String url = dictionaryApiUrl + "/" + word;
-        String response = restTemplate.getForObject(url, String.class);
-        return response != null
-                && !response.contains("No Definitions Found")
-                && !response.contains("\"title\"");
+        try{
+            RestTemplate restTemplate = new RestTemplate();
+            String url = dictionaryApiUrl + "/" + word;
+            restTemplate.getForObject(url, String.class);
+            return true;
+        }catch(HttpClientErrorException e){
+            return false;
+        }
     }
 
     public boolean verifyNotDuplicate(Long id, String word){
         GameState gameState = gameStateService.getGameState(id);
-        return gameState.getSubmittedWords().add(word);
+        return gameState.addWord(word);
     }
 
     public int generateScore(boolean valid){
